@@ -11,7 +11,7 @@ const SUPPORTED_EXTENSIONS = [
 ];
 
 const STOP_KEYWORDS = [
-  'node_modules', '.git', 'cache', 'temp', 'tmp', 
+  'node_modules', '.git', 'cache', 'temp', 'tmp',
   '$RECYCLE.BIN', 'System Volume Information', 'pagefile.sys', 'hiberfil.sys', 'dumpstack.log.tmp'
 ];
 
@@ -21,14 +21,14 @@ function crawlDirectory(directory, files = []) {
     for (const item of items) {
       const lowerItem = item.toLowerCase();
       if (STOP_KEYWORDS.some(k => k.toLowerCase() === lowerItem)) continue;
-      
-      // Additional check for common system patterns
+
+
       if (lowerItem.startsWith('$') || lowerItem === 'system volume information') continue;
 
       const fullPath = path.join(directory, item);
       try {
-        const stats = fs.lstatSync(fullPath); // Use lstat to avoid following symlinks into loops
-        
+        const stats = fs.lstatSync(fullPath);
+
         if (stats.isDirectory()) {
           crawlDirectory(fullPath, files);
         } else {
@@ -43,11 +43,11 @@ function crawlDirectory(directory, files = []) {
           }
         }
       } catch (err) {
-        // Silently skip files that are busy, locked, or restricted (e.g. pagefile.sys)
+
       }
     }
   } catch (err) {
-    // Skip directories that can't be read
+
   }
   return files;
 }

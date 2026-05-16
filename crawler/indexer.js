@@ -7,8 +7,8 @@ const INDEX_FILE = path.join(__dirname, '../indexes/file_index.json');
 
 class Indexer {
   constructor() {
-    this.forwardIndex = new Map(); // path -> file
-    this.invertedIndex = new Map(); // token -> Set(paths)
+    this.forwardIndex = new Map();
+    this.invertedIndex = new Map();
     this.bloomFilter = new BloomFilter();
     this.loadIndex();
   }
@@ -38,9 +38,7 @@ class Indexer {
     }
   }
 
-  /**
-   * Debounced version of saveIndex to prevent excessive disk I/O.
-   */
+
   requestSave() {
     if (this.saveTimeout) {
       clearTimeout(this.saveTimeout);
@@ -48,17 +46,15 @@ class Indexer {
     this.saveTimeout = setTimeout(() => {
       this.saveIndex();
       this.saveTimeout = null;
-    }, 5000); // Save at most once every 5 seconds
+    }, 5000);
   }
 
-  /**
-   * Adds a file to both forward and inverted indexes.
-   */
+
   addFile(file) {
     file.tokens = tokenizer.process(file.name);
     this.forwardIndex.set(file.path, file);
 
-    // Update Inverted Index and Bloom Filter
+
     file.tokens.forEach(token => {
       if (!this.invertedIndex.has(token)) {
         this.invertedIndex.set(token, new Set());
@@ -66,13 +62,11 @@ class Indexer {
       this.invertedIndex.get(token).add(file.path);
       this.bloomFilter.add(token);
     });
-    
+
     this.requestSave();
   }
 
-  /**
-   * Removes a file from both indexes.
-   */
+
   removeFile(filePath) {
     const file = this.forwardIndex.get(filePath);
     if (file && file.tokens) {
@@ -91,10 +85,10 @@ class Indexer {
   }
 
   updateFile(filePath, stats) {
-    // Remove old entries first to ensure clean inverted index
+
     this.removeFile(filePath);
-    
-    // Add new entry (re-tokenizes)
+
+
     const file = {
       path: filePath,
       name: path.basename(filePath),
@@ -108,16 +102,14 @@ class Indexer {
     return Array.from(this.forwardIndex.values());
   }
 
-  /**
-   * Returns a list of files that match a specific token using the inverted index.
-   */
+
   getFilesByToken(token) {
-    // 1. Bloom Filter Check (Fastest)
+
     if (!this.bloomFilter.contains(token)) {
       return [];
     }
 
-    // 2. Inverted Index Lookup
+
     const paths = this.invertedIndex.get(token);
     if (!paths) return [];
 
@@ -128,7 +120,7 @@ class Indexer {
     this.forwardIndex.clear();
     this.invertedIndex.clear();
     this.bloomFilter.clear();
-    
+
     files.forEach(file => this.addFile(file));
     this.saveIndex();
   }

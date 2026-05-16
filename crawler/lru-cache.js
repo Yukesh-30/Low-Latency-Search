@@ -1,7 +1,4 @@
-/**
- * A highly optimized LRU (Least Recently Used) Cache.
- * Uses a Doubly Linked List and a Map to achieve O(1) time complexity for get, put, and eviction.
- */
+
 class Node {
   constructor(key, value) {
     this.key = key;
@@ -15,15 +12,13 @@ class LRUCache {
   constructor(capacity = 100) {
     this.capacity = capacity;
     this.cache = new Map();
-    this.head = new Node(0, 0); // Dummy head
-    this.tail = new Node(0, 0); // Dummy tail
+    this.head = new Node(0, 0);
+    this.tail = new Node(0, 0);
     this.head.next = this.tail;
     this.tail.prev = this.head;
   }
 
-  /**
-   * Get a value from the cache and move it to the front (most recently used).
-   */
+
   get(key) {
     if (!this.cache.has(key)) return null;
 
@@ -33,9 +28,7 @@ class LRUCache {
     return node.value;
   }
 
-  /**
-   * Put a value into the cache. Evicts the least recently used item if at capacity.
-   */
+
   put(key, value) {
     if (this.cache.has(key)) {
       this._remove(this.cache.get(key));
@@ -52,19 +45,14 @@ class LRUCache {
     }
   }
 
-  /**
-   * Clears the cache.
-   */
+
   clear() {
     this.cache.clear();
     this.head.next = this.tail;
     this.tail.prev = this.head;
   }
 
-  /**
-   * Internal helper to add node to the front (after head).
-   * @private
-   */
+
   _add(node) {
     const headNext = this.head.next;
     this.head.next = node;
@@ -73,10 +61,7 @@ class LRUCache {
     headNext.prev = node;
   }
 
-  /**
-   * Internal helper to remove node from the list.
-   * @private
-   */
+
   _remove(node) {
     const nextNode = node.next;
     const prevNode = node.prev;

@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  Search, 
-  Folder, 
-  FileText, 
-  Image as ImageIcon, 
-  Music, 
-  Video, 
-  File, 
-  Clock, 
-  Star, 
-  HardDrive, 
-  Tag, 
+import {
+  Search,
+  Folder,
+  FileText,
+  Image as ImageIcon,
+  Music,
+  Video,
+  File,
+  Clock,
+  Star,
+  HardDrive,
+  Tag,
   ChevronRight,
   Monitor,
   Cloud,
@@ -27,7 +27,7 @@ function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-// --- Icons Helper ---
+
 const getFileIcon = (fileName) => {
   const ext = fileName.split('.').pop().toLowerCase();
   if (['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)) return <ImageIcon className="w-4 h-4 text-pink-500" />;
@@ -44,7 +44,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // Fetch system status
+
   useEffect(() => {
     fetch('/api/status')
       .then(res => res.json())
@@ -52,7 +52,7 @@ function App() {
       .catch(err => console.error('Status fetch failed', err));
   }, []);
 
-  // Debounced search
+
   useEffect(() => {
     if (!query.trim()) {
       setResults([]);
@@ -78,7 +78,7 @@ function App() {
 
   return (
     <div className="flex h-screen w-full bg-white select-none">
-      {/* Sidebar */}
+      {}
       <div className="w-64 glass border-r flex flex-col pt-12 pb-4 overflow-y-auto">
         <div className="px-4 mb-6">
           <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-wider mb-2 px-3">Favorites</h3>
@@ -109,9 +109,9 @@ function App() {
         </div>
       </div>
 
-      {/* Main Content */}
+      {}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Header */}
+        {}
         <header className="h-14 glass border-b flex items-center justify-between px-6 z-10">
           <div className="flex items-center gap-4">
             <div className="flex gap-1.5">
@@ -128,7 +128,7 @@ function App() {
           <div className="flex items-center gap-4">
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-black/40" />
-              <input 
+              <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -143,7 +143,7 @@ function App() {
           </div>
         </header>
 
-        {/* Results List */}
+        {}
         <div className="flex-1 overflow-y-auto bg-white">
           <table className="w-full text-left border-collapse">
             <thead className="sticky top-0 bg-white/95 backdrop-blur-sm z-10 border-b">
@@ -159,7 +159,7 @@ function App() {
               <AnimatePresence mode="popLayout">
                 {results.length > 0 ? (
                   results.map((item, idx) => (
-                    <motion.tr 
+                    <motion.tr
                       key={item.path}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -202,7 +202,7 @@ function App() {
               </AnimatePresence>
             </tbody>
           </table>
-          
+
           {loading && (
             <div className="flex justify-center py-8">
               <div className="w-6 h-6 border-2 border-mac-accent border-t-transparent rounded-full animate-spin" />
@@ -210,7 +210,7 @@ function App() {
           )}
         </div>
 
-        {/* Footer */}
+        {}
         <footer className="h-7 glass border-t flex items-center justify-between px-4 text-[11px] text-black/50">
           <div className="flex items-center gap-4">
             <span>{results.length} items found</span>

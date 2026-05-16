@@ -1,11 +1,7 @@
 const path = require('path')
 const { Worker } = require('worker_threads')
 
-/**
- * Starts a file crawl using a worker thread.
- * @param {string} directory - The root directory to crawl.
- * @returns {Promise<Array>} - A promise that resolves with the list of files.
- */
+
 function crawlDirectory(directory) {
   return new Promise((resolve, reject) => {
     const worker = new Worker(path.join(__dirname, 'worker.js'), {

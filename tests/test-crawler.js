@@ -7,40 +7,40 @@ const fs = require('fs');
 
 async function runTest() {
   const testDir = path.join(__dirname, 'test_files');
-  
-  // Cleanup previous tests
+
+
   if (fs.existsSync(testDir)) {
     fs.rmSync(testDir, { recursive: true, force: true });
   }
   fs.mkdirSync(testDir);
 
-  // 1. Create some initial files
+
   console.log('--- Initial Setup ---');
   const file1 = path.join(testDir, 'test1.txt');
   fs.writeFileSync(file1, 'Hello World');
-  
-  // 2. Perform initial crawl with worker thread
+
+
   console.log('--- Running Initial Crawl with Worker Thread ---');
   const startTime = Date.now();
   const files = await crawlDirectory(testDir);
   console.log(`Crawl completed in ${Date.now() - startTime}ms. Found ${files.length} files.`);
-  
+
   indexer.syncWithCrawl(files);
   console.log('Index initialized.');
 
-  // 3. Start watcher
+
   console.log('--- Starting Watcher ---');
   const watcher = startWatcher(testDir);
 
-  // Wait for watcher to initialize
+
   await new Promise(resolve => setTimeout(resolve, 2000));
 
-  // 4. Test incremental ADD
+
   console.log('--- Testing Incremental ADD ---');
   const file2 = path.join(testDir, 'test2.txt');
   fs.writeFileSync(file2, 'Incremental data');
-  
-  await new Promise(resolve => setTimeout(resolve, 1000)); // wait for watcher
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
   let currentFiles = indexer.getAllFiles();
   console.log(`Files in index: ${currentFiles.length}`);
   if (currentFiles.find(f => f.name === 'test2.txt')) {
@@ -49,24 +49,24 @@ async function runTest() {
     console.log('❌ Incremental ADD failed.');
   }
 
-  // 5. Test incremental CHANGE
+
   console.log('--- Testing Incremental CHANGE ---');
   fs.appendFileSync(file1, '...more data');
-  
-  await new Promise(resolve => setTimeout(resolve, 1000)); // wait for watcher
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
   const updatedFile1 = indexer.getAllFiles().find(f => f.name === 'test1.txt');
   console.log(`File1 size: ${updatedFile1.size}`);
-  if (updatedFile1.size > 11) { // 'Hello World' is 11 bytes
+  if (updatedFile1.size > 11) {
     console.log('✅ Incremental CHANGE successful.');
   } else {
     console.log('❌ Incremental CHANGE failed.');
   }
 
-  // 6. Test incremental REMOVE
+
   console.log('--- Testing Incremental REMOVE ---');
   fs.unlinkSync(file2);
-  
-  await new Promise(resolve => setTimeout(resolve, 1000)); // wait for watcher
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
   currentFiles = indexer.getAllFiles();
   console.log(`Files in index: ${currentFiles.length}`);
   if (!currentFiles.find(f => f.name === 'test2.txt')) {
