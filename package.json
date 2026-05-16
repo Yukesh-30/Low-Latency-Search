@@ -1,0 +1,26 @@
+{
+  "name": "fileexplorer",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "express": "^5.2.1",
+    "fs": "^0.0.1-security",
+    "natural": "^8.1.1",
+    "path": "^0.12.7",
+    "sorted-btree": "^2.1.0"
+  },
+  "devDependencies": {
+    "autocannon": "^8.0.0",
+    "nodemon": "^3.1.14"
+  }
+}
